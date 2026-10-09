@@ -1,0 +1,128 @@
+
+
+::09-OCT-2026:: 12:30PM IST 
+###########################################
+SUMMARY of localhost dev env ( Graph QL service ) 
+On sample group-insurance schema ) 
+###########################################
+.\.venv\Scripts\activate.ps1
+
+powershell tab-session-1
+(graphql-downstream) PS C:\pg_ws_nyl\graphql-downstream> uv run uvicorn app.main:app --port 8241 --reload
+
+powershell tab-session-1
+(nexus-mcp) PS C:\pg_ws_nyl\sprint2\nexus_mcp-avatar> uv run python main.py --http --port 9001 --host 127.0.0.1
+
+powershell tab-session-1
+npx @modelcontextprotocol/inspector
+
+Browser SESSION-2 
+http://127.0.0.1:8241/graphql
+
+query {
+  memberCoverage(customerId: 48) {
+    memberName employer region
+    benefitType benefitName coverageTier
+    electedAmount effectiveDate policyNumber productLine
+  }
+}
+
+###########################################
+
+
+
+
+
+
+
+
+Git Bash 
+
+cd "c:/pg_ws_nyl/MCP-n-REST_Api_Prototype/graphql-downstream" && uv pip install -r requirements.txt 2>&1 | tail -15
+
+
+netstat -ano | grep -E ':8241\s' | grep LISTENING || echo "nothing listening on 8241"
+
+
+$body = '{"query":"query { memberCoverage(customerId: 48) { memberName employer benefitType benefitName } }"}'
+Invoke-RestMethod -Uri "http://127.0.0.1:8241/graphql" -Method Post -ContentType "application/json" -Headers @{ "X-API-Key" = "<your-local-api-key>" } -Body $body | ConvertTo-Json -Depth 6
+
+
+
+
+$h2 = "C:\Users\seramalanna_ramesh\.m2\repository\com\h2database\h2\2.1.214\h2-2.1.214.jar"; java -cp $h2 org.h2.tools.Console -web -webPort 8082 -browser
+
+Start-Sleep -Milliseconds 1; (Test-NetConnection -ComputerName localhost -Port 8082).TcpTestSucceeded
+
+http://192.168.1.100:8082/login.do?jsessionid=acb233b5135fdfdb4e21217aff8f082f
+JDBC URL 
+jdbc:h2:file:C:/pg_ws_nyl/graphql-downstream/h2data/gi;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+sa 
+<blank>
+connect 
+
+able to see data 
+
+Hurray :) 
+
+
+
+
+
+??PROMPT??
+provide conversation of this whole developement session ; caturping the code evolution,  like fuser questions, iles created , troubleshooting done , alternative suggested for a developer reference.
+
+Provide this answer in a seperate HTML file with light theme and place it in here 
+
+
+
+
+I have a downstream service (GraphQL) running locally at 
+http://127.0.0.1:8241/graphql
+and for 
+REquest
+
+query { memberCoverage(customerId: 48) { memberName employer benefitType benefitName } }
+it answers 
+RESPONSE
+{
+  "data": {
+    "memberCoverage": [
+      {
+        "memberName": "Hiroshi Garcia",
+        "employer": "Acme Corp",
+        "benefitType": "ABSENCE",
+        "benefitName": "Absence / Leave Management"
+      },
+      {
+        "memberName": "Hiroshi Garcia",
+        "employer": "Acme Corp",
+        "benefitType": "STD",
+        "benefitName": "Short Term Disability"
+      }
+    ]
+  }
+}
+
+Now I want to glue this integration into another fresh MCP tool 
+1) Add new MCP tool named 'get_member_coverage_by_SSN()' taking Id as parameter 
+
+2) will change FROM 
+
+MDM_URI=https://gdh-mdmcustomerapi.dev.gbs.nylcloud.com/graphiql?path=/api/client/search
+to 
+MDM_URI=http://127.0.0.1:8241/graphql
+
+3) whenever 'get_member_coverage_by_SSN()' is invoked with ID 
+construct request payload like 
+
+query { memberCoverage(customerId: 48) { memberName employer benefitType benefitName } }
+
+where '48' was ID received 
+
+and send it to MDM_URI= gateway 
+
+4) introduce log statements so that when MCP tool is invoked via an inspector Request URL and payload gets logged on console 
+
+
+
